@@ -7,7 +7,7 @@ It also tracks a host of other CDs by default and others can be added.
 ####Adding Spells
 /cdb add spellId
 
-You can use the spells name too but in a limited way due to flaws in the API. ([[http://www.wowwiki.com/API_GetSpellLink|GetSpellLink()]])\\
+You can use the spells name too but in a limited way due to flaws in the API. http://www.wowwiki.com/API_GetSpellLink
 Names will only work if the name of the spell is in your spell book. 
 You can use WoWHead to look up a spells ID. For example Rejuventation's WoWHead page is at :
 http://www.wowhead.com/spell=774
