@@ -132,7 +132,7 @@ function slashHandler(msg)
 		table.insert(arguments, v);
 	end
 	if 		arguments[1] == "toggle"	then slashHandler_togl();
-	elseif	arguments[1] == "add"		then slashHandler_add(arguments[2]);
+	elseif	arguments[1] == "add"		then slashHandler_add(arguments);
 	elseif	arguments[1] == "rem"		then slashHandler_rem(arguments);
 	elseif	arguments[1] == "channel"	then slashHandler_chan(arguments);
 	elseif	arguments[1] == "list"		then slashHandler_list();
@@ -154,11 +154,13 @@ function slashHandler_help(topic)
 		print(v)
 	end
 end
-function slashHandler_add(spellName)
-	local spellLink,_ = GetSpellLink(spellName);
+function slashHandler_add(args)
+	-- Trim "add"
+	table.remove(args, 1)
+
+	spellId = spellFinder(args)
+	spellLink = GetSpellLink(spellId)
 	if (spellLink) then
-		local _, _, spellId = string.find(spellLink, "^|c%x+|Hspell:(.+)|h%[.*%]")
-		spellId = tonumber(spellId);
 		tracklist[spellId] = true;
 		if (defaultlist[spellId] ~= nil) then 
 			defaultlist[spellId] = true; 
@@ -181,30 +183,17 @@ function slashHandler_list()
 	end
 end
 function slashHandler_rem(args)
+	-- Trim "rem"
 	table.remove(args, 1)
-	local spellLink,_ = GetSpellLink(args[1]);
-	if (spellLink) then
-		_, _, spellId = string.find(spellLink, "^|c%x+|Hspell:(.+)|h%[.*%]");
-	else
-		spellName = args[1];
-		table.remove(args, 1)
-		for _,k in ipairs(args) do
-			spellName = spellName.." "..k;
-		end
-		for i,_ in pairs(tracklist) do
-			local info = {GetSpellInfo(i)};
-			if (type(info) == "table") then
-				if (tonumber(info[1]) == tonumber(spellName)) then
-					spellId = i;
-					break;
-				end
-			end
-		end
-	end
-	spellId = tonumber(spellId);
-	if tracklist[spellId] == nil then print("That doesn't appear to be in the list, check /cdb list or try again with a spellId."); return; end;
+	-- Find Spell 
+	spellId = spellFinder(args)
+	-- If spell doesnt exist, exit
+	if tracklist[spellId] == nil then print("That doesn't appear to be in the list, check /cdb list or try again with a spell ID#."); return; end;
+	-- Spell exists, get a link
+	spellLink = GetSpellLink(spellId)
+	-- Remove spell from list
 	tracklist[spellId] = nil;
-	if spellLink == nil then spellLink = GetSpellLink(spellId); end
+	-- Report back to the user
 	if (defaultlist[spellId] ~= nil) then 
 		if (CDBsettings.badDefaults == nil) then CDBsettings.badDefaults = {}; end;
 		table.insert(CDBsettings.badDefaults, spellId)
@@ -274,4 +263,20 @@ function slashHandler_togl(channel)
 	CDBsettings.Enabled = not CDBsettings.Enabled; 
 	if  (CDBsettings.Enabled) then print("CDB Enabled!");
 	else print("CDB Disabled!"); end
+end
+function spellFinder(input)
+	-- Check if input was a SpellId, else look up by name
+	local spellLink,_ = GetSpellLink(input);
+	if (spellLink) then
+		_, _, spellId = string.find(spellLink, "^|c%x+|Hspell:(.+)|h%[.*%]");
+	else
+		spellName = input[1];
+		table.remove(input, 1)
+		for _,k in ipairs(input) do
+			spellName = spellName.." "..k;
+		end
+		spellLink,_ = GetSpellLink(spellName);
+		_, _, spellId = string.find(spellLink, "^|c%x+|Hspell:(.+)|h%[.*%]");
+	end
+	return tonumber(spellId);
 end
