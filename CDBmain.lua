@@ -146,7 +146,7 @@ function slashHandler_help(topic)
 		["toggle"]	= {"Enables or disables Cooldown Barker:", "/cdb toggle on\off"},
 		["add"]		= {"Adds a cooldown to the list of things we track:", "/cdb add SpellName or SpellId", "You have to look up the spells ID if it isn't a spell your class can cast.", "This is a limitiation in WoW, complain to Blizz.", "Your spells WoWHead page has the id at the end of the url.", "Rejuvenation is http://www.wowhead.com/spell=774 for example."},
 		["rem"]		= {"Removes a cooldown from the list of things we track:", "/cdb rem SpellName or SpellId"},
-		["channel"]	= {"Set the list of channel we announce to:", "/cdb channel [battleground, channel, emote, guild, officer, party, raid, raid_warning, say, whisper, yell]"},
+		["channel"]	= {"To change the channel we announce to use:", "/cdb channel [battleground, channel, emote, guild, officer, party, raid, raid_warning, say, whisper, yell]"},
 		["list"]	= {"Lists all the cooldowns we watch:", "/cdb list"},
 		["defaults"]= {"Clears everything and resets Cooldown Barker to default settings", "/cdb defaults yes"},
 	}
@@ -208,6 +208,11 @@ function slashHandler_rem(args)
 end
 function slashHandler_chan(arguments)
 	channel = arguments[2];
+	if channel == nil then 
+		print("Current channel is "..CDBsettings.Channel)
+		slashHandler_help("channel")
+		return;
+	end
 	local channels = {
 		["battleground"] = true,
 		["emote"] = true,
