@@ -1,0 +1,12 @@
+## Interface: 40300
+## Title: Cooldown Barker
+## Version: 0.02
+## Notes: Yells at people
+## Author: Liath (Uppsala@Medivh US)
+## SavedVariablesPerCharacter: CDBsettings
+## X-Curse-Packaged-Version: r23
+## X-Curse-Project-Name: Cooldown Barker
+## X-Curse-Project-ID: cooldown-barker
+## X-Curse-Repository-ID: wow/cooldown-barker/mainline
+CDBmain.lua
+CDBoptions.lua
